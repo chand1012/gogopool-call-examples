@@ -1,33 +1,27 @@
+import { useAsyncEffect } from "use-async-effect";
 import { storageAddress } from "../constants/fuji";
 import Storage from "../contracts/Storage.json";
-import { useCall } from "@usedapp/core";
 import { Contract, utils } from "ethers";
-import { Falsy } from "../types";
+import useProvider from "./provider";
+import { useState } from "react";
 
-const encodeKey = (key: string) => {
-  return utils.keccak256(
-    utils.defaultAbiCoder.encode(
-      ["string", "string"],
-      ["contract.address", key]
-    )
-  );
-};
+export const useStorageAddress = (
+  key: string,
+  storageAddr?: string
+): string | undefined => {
+  const [address, setAddress] = useState<string | undefined>(undefined);
+  const addr = storageAddr || storageAddress;
+  const provider = useProvider();
+  useAsyncEffect(async () => {
+    if (!provider) return;
+    const contractInterface = new utils.Interface(Storage.abi);
+    const contract = new Contract(addr, contractInterface, provider);
+    setAddress(
+      await contract.getAddress(
+        utils.solidityKeccak256(["string", "string"], ["contract.address", key])
+      )
+    );
+  }, [addr, provider, key]);
 
-export const useStorageAddress = (contractKey: string | Falsy) => {
-  const contractInterface = new utils.Interface(Storage.abi);
-  const { value, error } =
-    useCall(
-      contractKey && {
-        contract: new Contract(storageAddress, contractInterface),
-        method: "getAddress",
-        args: [encodeKey(contractKey)],
-      }
-    ) ?? {};
-
-  if (error) {
-    console.error(error);
-    return undefined;
-  }
-
-  return value?.[0];
+  return address;
 };

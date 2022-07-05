@@ -1,18 +1,22 @@
 import type { NextPage } from "next";
-import { useEthers } from "@usedapp/core";
-import { useState } from "react";
+import useWallet from "../hooks/wallet";
+import useBalance from "../hooks/balance";
+import { formatEther } from "ethers/lib/utils";
 import { useStorageAddress } from "../hooks/storage";
 
 const Home: NextPage = () => {
-  const { activateBrowserWallet, account, deactivate } = useEthers();
+  const { account, activate, deactivate } = useWallet();
 
   const oracleAddress = useStorageAddress("Oracle");
 
+  const balance = useBalance(account);
+
   return (
     <div>
-      {!account && <button onClick={activateBrowserWallet}> Connect </button>}
-      {account && <button onClick={deactivate}> Disconnect </button>}
       {account && <p>Account: {account}</p>}
+      {balance && <p>Balance: {formatEther(balance)}</p>}
+      {!account && <button onClick={activate}>Connect</button>}
+      {account && <button onClick={deactivate}>Disconnect</button>}
       {oracleAddress && <p>Oracle: {oracleAddress}</p>}
     </div>
   );
