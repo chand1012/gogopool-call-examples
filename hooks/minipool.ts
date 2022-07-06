@@ -26,6 +26,7 @@ const useCreateMinipool = (
   const [response, setResponse] = useState<any>(undefined);
   const [approveResponse, setApproveResponse] = useState<any>(undefined);
   const [success, setSuccess] = useState<boolean>(false);
+  const [approveSuccess, setApproveSuccess] = useState<boolean>(false);
 
   const approve = async (address: string, ggpBondAmt: BigNumber) => {
     if (!token) return;
@@ -46,6 +47,12 @@ const useCreateMinipool = (
       setError(e as string);
     }
   };
+
+  useEffect(() => {
+    if (approveResponse?.status === 1) {
+      setApproveSuccess(true);
+    }
+  }, [approveResponse]);
 
   const createMinipool = async (
     nodeID: string,
@@ -75,14 +82,17 @@ const useCreateMinipool = (
       return;
     }
 
-    const eth = utils.parseEther(ggpBondAmt.toString());
+    if (!approveSuccess) {
+      setError("Please approve GGP bond amount");
+      return;
+    }
 
     try {
       const tx = await contract.createMinipool(
         nodeID,
         duration,
         delegationFee,
-        eth
+        ggpBondAmt
       );
       const resp = await tx.wait();
       setResponse(resp);
