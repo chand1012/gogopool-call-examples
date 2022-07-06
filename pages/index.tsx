@@ -41,7 +41,7 @@ const Home: NextPage = () => {
 
   const createMinipoolGGP = async () => {
     if (!account) return;
-    const amount = 1;
+    const amount = BigNumber.from(1);
     // This is a placeholder. I have to talk to John about
     // how to properly format the Avalanche Node IDs as an
     // eth address - Chandler.
@@ -50,12 +50,7 @@ const Home: NextPage = () => {
     // the UI.
     const duration = BigNumber.from(60 * 60 * 24 * 7);
     const delegationFee = BigNumber.from(2000);
-    await createMinipool(
-      nodeID,
-      duration,
-      delegationFee,
-      BigNumber.from(amount)
-    );
+    await createMinipool(nodeID, duration, delegationFee, amount, amount);
   };
 
   useEffect(() => {

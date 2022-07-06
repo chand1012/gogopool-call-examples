@@ -8,7 +8,8 @@ export interface UseCreateMinipool {
     nodeID: string,
     duration: BigNumber,
     delegationFee: BigNumber,
-    ggpBondAmt: BigNumber
+    ggpBondAmt: BigNumber,
+    depositAmount: BigNumber
   ) => Promise<void>;
   approve: (address: string, ggpBondAmt: BigNumber) => Promise<void>;
   error?: string | undefined;
@@ -58,7 +59,8 @@ const useCreateMinipool = (
     nodeID: string,
     duration: BigNumber,
     delegationFee: BigNumber,
-    ggpBondAmt: BigNumber
+    ggpBondAmt: BigNumber,
+    depositAmount: BigNumber
   ) => {
     if (!contract) return;
     if (!provider) {
@@ -92,7 +94,10 @@ const useCreateMinipool = (
         nodeID,
         duration,
         delegationFee,
-        ggpBondAmt
+        ggpBondAmt,
+        {
+          value: depositAmount,
+        }
       );
       const resp = await tx.wait();
       setResponse(resp);
