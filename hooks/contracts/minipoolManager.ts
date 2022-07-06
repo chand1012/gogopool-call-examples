@@ -14,7 +14,7 @@ const useMinipoolManagerContract = (
   useAsyncEffect(() => {
     if (!provider || !minipoolManagerAddress) return;
     const i = new utils.Interface(MinipoolManager.abi);
-    const c = new Contract(minipoolManagerAddress, i, provider);
+    const c = new Contract(minipoolManagerAddress, i, provider.getSigner());
     setContract(c);
   }, [provider, minipoolManagerAddress]);
 

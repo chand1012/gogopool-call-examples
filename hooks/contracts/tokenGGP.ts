@@ -12,7 +12,7 @@ const useTokenGGPContract = (provider: providers.Web3Provider | undefined) => {
   useAsyncEffect(() => {
     if (!provider || !tokenContractAddress) return;
     const i = new utils.Interface(TokenGGP.abi);
-    const c = new Contract(tokenContractAddress, i, provider);
+    const c = new Contract(tokenContractAddress, i, provider.getSigner());
     setContract(c);
   }, [provider, tokenContractAddress]);
 
