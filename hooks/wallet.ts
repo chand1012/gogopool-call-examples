@@ -1,7 +1,7 @@
 import useProvider from "./provider";
 import { useState } from "react";
 import useAsyncEffect from "use-async-effect";
-import { utils } from "ethers";
+import { utils, providers } from "ethers";
 
 export interface UseWallet {
   account: string | undefined;
@@ -10,6 +10,7 @@ export interface UseWallet {
   chainId: number | undefined;
   chainName: string | undefined;
   error?: string | undefined;
+  provider: providers.Web3Provider | undefined;
 }
 
 const useWallet = (): UseWallet => {
@@ -54,6 +55,7 @@ const useWallet = (): UseWallet => {
     deactivate,
     chainId,
     chainName,
+    provider,
   };
 };
 
