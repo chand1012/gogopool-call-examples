@@ -32,7 +32,7 @@ const useDeposit = (
 
     try {
       const tx = await contract.depositAVAX({
-        amount: eth,
+        value: eth,
       });
       const resp = await tx.wait();
       setResponse(resp);
