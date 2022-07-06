@@ -1,34 +1,86 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# GoGoPool Call Examples
 
-## Getting Started
+This repo is for some examples on how to interface with the GoGoPool smart contracts.
 
-First, run the development server:
+## Adding to a Project
 
-```bash
-npm run dev
-# or
-yarn dev
+The heart of this project is the [ `hooks` ](https://github.com/chand1012/gogopool-call-examples/tree/main/hooks) directory. This directory contains all the functional code needed to call the smart contracts using EthersJS.
+
+To use these contracts on your local project, you'll want to copy the `hooks` , `contracts` , and `constants` directories to the base source directory of your project.
+
+## Calling 
+
+Call examples can also be found at the top of [ `index.tsx` ](https://github.com/chand1012/gogopool-call-examples/blob/main/pages/index.tsx).
+
+### useWallet
+
+This hook gives access to the local browser wallet (for now only MetaMask is supported). There are seven returned objects that can be accessed like so:
+
+```javascript
+// calling at the start of a component or page
+const {
+    account,
+    activate,
+    deactivate,
+    provider,
+    chainId,
+    chainName,
+    error
+} = useWallet();
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+* `account` - string of the user's address.
+* `activate` - async void function with no parameters that attempts to activate the browser wallet. Check `error` for errors on activation.
+* `deactivate` - async void function with no parameters that deactivates the browser wallet if active. Otherwise does nothing.
+* `provider` - if `activate` is successful, the EthersJS provider.
+* `chainId` - chain ID of the currently selected network. Should be `43113` for Avalanche fuji testnet and `43114` for Avalanche mainnet.
+* `chainName` - chain name of the currently selected network. Does not work on Avalanche network.
+* `error` - the returned error as a string.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### useDeposit(provider)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Allows access to the `send` function, used for depositing AVAX to the GGP network for liquid staking, as well as its returned response, error, and if it was a successful deposit or not.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+[ `useWallet` ](#useWallet) should be called before this, and the returned provider should be passed into `useDeposit` .
 
-## Learn More
+```javascript
+// calling at the start of a component or page
+const {
+    send,
+    // renamed for clarity.
+    error: depositError,
+    response: depositResponse,
+    success: depositSuccess,
+} = useDeposit(provider);
+```
 
-To learn more about Next.js, take a look at the following resources:
+* `send` - async void function. Takes the amount of AVAX to send as a `number` in AVAX units.
+* `error` - if the deposit fails, the error as a string.
+* `response` - the returned response of the function call.
+* `success` - boolean. If the call was successful, returns `true`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### useCreateMinipool(provider)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+This hook gives access to the `approve` and `createMinipool` functions. The `approve` function approves the GGP Bond token for withdrawal from the user's account when calling `createMinipool` . The `createMinipool` function begins minipool creation process on the backend for node operators.
 
-## Deploy on Vercel
+[ `useWallet` ](#useWallet) should be called before this, and the returned provider should be passed into `useCreateMinipool` .
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```javascript
+// calling at the start of a component or page
+const {
+    createMinipool,
+    approve,
+    // renamed for Clarity
+    error: minipoolError,
+    response: minipoolResponse,
+    success: minipoolSuccess,
+    approveResponse: minipoolApproveResponse,
+} = useCreateMinipool(provider);
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+* `createMinipool` - async void function. Takes the nodeID as a string, and the duration, delegation fee, the node operator GGP Bond amount, and the AVAX node operator deposit amount as EtherJS [`BigNumber`](https://docs.ethers.io/v5/api/utils/bignumber/) as parameters. Starts the process of creating a GGP Node.
+* `approve` - async void function. Takes the node operator GGP Bond amount as an EthersJS BigNumber as a parameter. Approves the `createMinipool` function to withdraw the specified number of GGP Bond tokens from the user's account.
+* `error` - if the minipool creation call fails, the error as a string.
+* `response` - the returned response of the function call.
+* `success` - If the call was successful, returns `true`. Boolean. 
+* `approveResponse` - the response of the `approve` function call. String.
