@@ -90,6 +90,22 @@ const useCreateMinipool = (
     }
 
     try {
+      console.log("This is a test transaction.");
+      const testTx = await contract.callStatic.createMinipool(
+        nodeID,
+        duration,
+        delegationFee,
+        ggpBondAmt,
+        {
+          value: depositAmount,
+        }
+      );
+      console.log(testTx);
+      console.log("This is a test wait.");
+      const testResp = await testTx.wait();
+      console.log(testResp);
+
+      console.log("This is a real transaction.");
       const tx = await contract.createMinipool(
         nodeID,
         duration,
@@ -99,10 +115,12 @@ const useCreateMinipool = (
           value: depositAmount,
         }
       );
+      console.log("This is a real wait.");
       const resp = await tx.wait();
       setResponse(resp);
     } catch (e) {
       setError(e as string);
+      console.error(e);
     }
   };
 
