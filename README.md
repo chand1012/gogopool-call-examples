@@ -37,6 +37,23 @@ const {
 * `chainName` - chain name of the currently selected network. Does not work on Avalanche network.
 * `error` - the returned error as a string.
 
+### useBalance(address: string)
+
+Gives the balance of the specified account as an EthersJS `BigNumber` . You can use the EthersJS util `formatEther` to properly display the number.
+
+```javascript
+const account = '0xACe0C428377F7C501f0D752F112C848E469ce847';
+const balance = useBalance(account)
+```
+
+### useExchangeRate(provider)
+
+This hook gives the exchange rate of AVAX to ggAVAX as an EthersJS `BigNumber` . You can use the EthersJS util `formatEther` to properly display the number.
+
+```javascript
+const exchangeRate = useExchangeRate(provider)
+```
+
 ### useDeposit(provider)
 
 Allows access to the `send` function, used for depositing AVAX to the GGP network for liquid staking, as well as its returned response, error, and if it was a successful deposit or not.
