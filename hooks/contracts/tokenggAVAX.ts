@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { providers, utils, Contract } from "ethers";
-import useAsyncEffect from "use-async-effect";
 import { useStorageAddress } from "../storage";
 import TokenggAVAX from "../../contracts/TokenggAVAX.json";
 
@@ -9,7 +8,7 @@ const useTokenContract = (provider: providers.Web3Provider | undefined) => {
 
   const tokenContractAddress = useStorageAddress("TokenggAVAX");
 
-  useAsyncEffect(() => {
+  useEffect(() => {
     if (!provider || !tokenContractAddress) return;
     const i = new utils.Interface(TokenggAVAX.abi);
     const c = new Contract(tokenContractAddress, i, provider.getSigner());
