@@ -6,11 +6,14 @@ import useDeposit from "../hooks/deposit";
 import useCreateMinipool from "../hooks/minipool";
 import { useEffect } from "react";
 import { BigNumber } from "ethers";
+import useExchangeRate from "../hooks/ggexchange";
 
 const Home: NextPage = () => {
   const { account, activate, deactivate, provider } = useWallet();
 
   const balance = useBalance(account);
+
+  const exchangeRate = useExchangeRate(provider);
 
   const {
     send,
@@ -90,6 +93,7 @@ const Home: NextPage = () => {
     <div>
       {account && <p>Account: {account}</p>} <br />
       {balance && <p>Balance: {formatEther(balance)}</p>} <br />
+      {exchangeRate && <p>Exchange Rate: {formatEther(exchangeRate)}</p>} <br />
       {!account && <button onClick={activate}>Connect</button>} <br />
       {account && <button onClick={deactivate}>Disconnect</button>} <br />
       {account && <button onClick={depositAVAX}>Deposit AVAX</button>} <br />
