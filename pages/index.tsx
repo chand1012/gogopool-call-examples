@@ -11,6 +11,7 @@ import { nodeID, parseDelta, randomHexString } from "../utils";
 import useExchangeRate from "../hooks/ggexchange";
 import { randomUUID } from "crypto";
 
+
 const Home: NextPage = () => {
   const { account, activate, deactivate, provider } = useWallet();
 
