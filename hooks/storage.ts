@@ -1,5 +1,6 @@
 import { useAsyncEffect } from "use-async-effect";
-import { storageAddress } from "../constants/fuji";
+// import { storageAddress } from "../constants/fuji";
+import { storageAddress } from "../constants/anr";
 import Storage from "../contracts/Storage.json";
 import { Contract, utils } from "ethers";
 import useProvider from "./provider";
