@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { BigNumber, providers, utils } from "ethers";
+import { BigNumber, providers } from "ethers";
 import useMinipoolManagerContract from "./contracts/minipoolManager";
 import useTokenGGPContract from "./contracts/tokenGGP";
+import { overrides } from "../utils";
 
 export interface UseCreateMinipool {
   createMinipool: (
@@ -90,19 +91,39 @@ const useCreateMinipool = (
     }
 
     try {
+      console.log("This is a test transaction.");
+      const testTx = await contract.callStatic.createMinipool(
+        nodeID,
+        duration,
+        delegationFee,
+        ggpBondAmt,
+        {
+          ...overrides,
+          value: depositAmount,
+        }
+      );
+      console.log(testTx);
+      // console.log("This is a test wait.");
+      // const testResp = await testTx.wait();
+      // console.log(testResp);
+
+      console.log("This is a real transaction.");
       const tx = await contract.createMinipool(
         nodeID,
         duration,
         delegationFee,
         ggpBondAmt,
         {
+          ...overrides,
           value: depositAmount,
         }
       );
+      console.log("This is a real wait.");
       const resp = await tx.wait();
       setResponse(resp);
     } catch (e) {
       setError(e as string);
+      console.error(e);
     }
   };
 

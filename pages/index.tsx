@@ -6,7 +6,11 @@ import useDeposit from "../hooks/deposit";
 import useCreateMinipool from "../hooks/minipool";
 import { useEffect } from "react";
 import { BigNumber } from "ethers";
+import { parseEther } from "ethers/lib/utils";
+import { nodeID, parseDelta, randomHexString } from "../utils";
 import useExchangeRate from "../hooks/ggexchange";
+import { randomUUID } from "crypto";
+
 
 const Home: NextPage = () => {
   const { account, activate, deactivate, provider } = useWallet();
@@ -32,28 +36,29 @@ const Home: NextPage = () => {
   } = useCreateMinipool(provider);
 
   const depositAVAX = async () => {
-    const amount = 1; // placeholder. Should be read from UI. Units in AVAX.
+    const amount = 1000; // placeholder. Should be read from UI. Units in AVAX.
     await send(amount);
   };
 
   const approveGGP = async () => {
     if (!account) return;
-    const amount = 1; // placeholder. Should be read from UI. Units in AVAX.
+    const amount = parseEther("1000"); // placeholder. Should be read from UI. Units in nAVAX.
     await approve(account, BigNumber.from(amount));
   };
 
   const createMinipoolGGP = async () => {
     if (!account) return;
-    const amount = BigNumber.from(1);
+    const amount = parseEther("1000");
+    const fee = parseEther("200");
     // This is a placeholder. I have to talk to John about
     // how to properly format the Avalanche Node IDs as an
     // eth address - Chandler.
-    const nodeID = "0x0000000000000000000000000000000000000000";
+    const nID = nodeID("randomUUID()");
     // These are also placeholder values. They should be read from
     // the UI.
-    const duration = BigNumber.from(60 * 60 * 24 * 7);
-    const delegationFee = BigNumber.from(2000);
-    await createMinipool(nodeID, duration, delegationFee, amount, amount);
+    const duration = BigNumber.from(parseDelta("1m"));
+    const delegationFee = BigNumber.from(20000);
+    await createMinipool(nID, duration, delegationFee, fee, amount);
   };
 
   useEffect(() => {
@@ -79,9 +84,9 @@ const Home: NextPage = () => {
       console.log(minipoolSuccess);
     }
 
-    if (minipoolApproveResponse) {
-      console.log(minipoolApproveResponse);
-    }
+    // if (minipoolApproveResponse) {
+    //   console.log(minipoolApproveResponse);
+    // }
   }, [
     minipoolError,
     minipoolResponse,
