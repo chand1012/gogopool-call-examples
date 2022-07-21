@@ -7,9 +7,8 @@ import useCreateMinipool from "../hooks/minipool";
 import { useEffect } from "react";
 import { BigNumber } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import { nodeID, parseDelta, randomHexString } from "../utils";
+import { nodeID, parseDelta } from "../utils";
 import useExchangeRate from "../hooks/ggexchange";
-import { randomUUID } from "crypto";
 
 const Home: NextPage = () => {
   const { account, activate, deactivate, provider } = useWallet();
