@@ -11,6 +11,7 @@
   "dependencies": {
     "@ethersproject/keccak256": "^5.6.1",
     "@ethersproject/strings": "^5.6.1",
+    "@rainbow-me/rainbowkit": "^0.4.4",
     "@types/ms": "^0.7.31",
     "avalanche": "^3.15.3",
     "buffer": "^6.0.3",
@@ -19,7 +20,8 @@
     "next": "12.2.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "use-async-effect": "^2.2.6"
+    "use-async-effect": "^2.2.6",
+    "wagmi": "^0.5.11"
   },
   "devDependencies": {
     "@types/node": "18.0.1",
